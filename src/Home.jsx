@@ -41,7 +41,7 @@ const Home = () => {
   useEffect(function () {
     if (localStorage.getItem('validation') === 'true') {
       localStorage.setItem('validation', 'false')
-      window.location.reload()
+      // window.location.reload()
     }
   }, [])
 
