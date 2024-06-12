@@ -1,0 +1,27 @@
+.Error_text{
+font-size: small;
+color: red;
+display: none;
+}
+.Header{
+    background-color: rgb(165, 255, 255);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.text_display{
+    display: none;
+}
+.add_money{
+    background-color: rgba(224, 224, 224, 0.404);
+    position: absolute;
+    top: 0%;
+    height: 100vh;
+    width: 100vw;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+.text_weight{
+    font-weight: bold;
+}
