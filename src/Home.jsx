@@ -2,10 +2,18 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Firebase from './Firebase'
 import Transections from './Transections'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser, faPhone, faEnvelope, faLocationDot, faRightFromBracket, faTrash, faPlus, faSubtract, faCookieBite, faIndianRupee, faBoxesStacked } from '@fortawesome/free-solid-svg-icons'
+import Footer from './Footer'
 
 const Home = () => {
+  const name = useRef()
   const Phone = useRef()
   const Mail = useRef()
+  const address = useRef()
+
+  const field_err = useRef()
+  const customer_success = useRef()
 
   const phone_error = useRef()
   const mail_error = useRef()
@@ -21,12 +29,16 @@ const Home = () => {
   const amount = useRef('')
   const quantity = useRef('')
   const [creditstate, setcreditstate] = useState({})
+  const field_err_credit = useRef()
+  const field_err_credit_success = useRef()
 
   //debit ref's
   const [total_balance_debit, set_total_balance_debit] = useState('')
   const [debitstate, setdebitstate] = useState({})
   const debit = useRef()
   const amount_debit = useRef('')
+  const field_err_debit = useRef()
+  const field_err_debit_success = useRef()
 
   const [user_mail, setuser_mail] = useState({})
   const [user_phone, setuser_phone] = useState({})
@@ -63,12 +75,15 @@ const Home = () => {
         if (err) {
           alert('Some Error Occured')
         } else {
-          alert('transection save')
+          field_err_credit_success.current.style.display = 'block'
           set_total_balance('')
           setcreditstate({})
           item.current.value = ''
           amount.current.value = ''
           quantity.current.value = ''
+          setTimeout(() => {
+            field_err_credit_success.current.style.display = 'none'
+          }, 2000);
         }
       })
     }
@@ -82,7 +97,10 @@ const Home = () => {
         } else {
           setdebitstate({})
           set_total_balance_debit('')
-          alert('Transection Saved')
+          field_err_debit_success.current.style.display = 'block'
+          setTimeout(() => {
+            field_err_debit_success.current.style.display = 'none'
+          }, 2000);
         }
       })
     }
@@ -103,11 +121,29 @@ const Home = () => {
         if (err) {
           alert('Some Error Occured')
         } else {
-          alert('Customer added Successfully')
+          name.current.value = ''
+          Phone.current.value = ''
+          Mail.current.value = ''
+          address.current.value = ''
+          setuser_mail({})
+          Mail.current.setAttribute('class', 'form-control mt-1 mb-2')
+          mail_error.current.style.display = 'none'
+          setuser_phone({})
+          Phone.current.setAttribute('class', 'form-control mt-1 mb-2')
+          phone_error.current.style.display = 'none'
+          btn_add_customer.current.removeAttribute('disabled')
+          setdata({ Balance: 0 })
+          customer_success.current.style.display = 'block'
+          setTimeout(() => {
+            customer_success.current.style.display = 'none'
+          }, 3000);
         }
       })
     } else {
-      alert('All Fields Are Mendatory')
+      field_err.current.style.display = 'block'
+      setTimeout(() => {
+        field_err.current.style.display = 'none'
+      }, 3000);
     }
   }
 
@@ -157,6 +193,17 @@ const Home = () => {
 
   }
 
+  function delete_customer(keys_customer) {
+
+    Firebase.child(`users/${key}/customer/${keys_customer}`).once('value', function (user_data) {
+      if (user_data.val().Balance !== 0) {
+        alert('First Clear The Balance')
+      } else if (window.confirm('Are you Sure, Once Deleted Never Restored.')) {
+        Firebase.child(`users/${key}/customer/${keys_customer}`).remove()
+      }
+    })
+  }
+
   //Credit functions
 
   function credit_page(key) {
@@ -179,7 +226,10 @@ const Home = () => {
         }
       })
     } else {
-      alert('All fields are Mandatory');
+      field_err_credit.current.style.display = 'block'
+      setTimeout(() => {
+        field_err_credit.current.style.display = 'none'
+      }, 2000);
     }
   }
 
@@ -216,7 +266,10 @@ const Home = () => {
         }
       })
     } else {
-      alert('All Fields Are Mandatory')
+      field_err_debit.current.style.display = 'block'
+      setTimeout(() => {
+        field_err_debit.current.style.display = 'none'
+      }, 2000);
     }
 
   }
@@ -229,97 +282,110 @@ const Home = () => {
 
   return (
     <div>
-      <div className=' Header pe-4 pb-2'>
-        <div></div>
-        <h4 className=' text-center mt-2 ps-5'>Welcome, {user.Name ? user.Name : 'User'}</h4>
-        <button className=' btn btn-danger mt-2' onClick={logout}>Logout</button>
-      </div>
-      <div className='container'>
-        <h1 className=' text-center mt-3 mb-2'>Customer Details</h1>
-        <form>
-          <label>Name:<span>*</span></label>
-          <input type="text" className="form-control mb-2 mt-1" name='name' onChange={set} placeholder='Enter Customer Name' />
-          <label>Phone:<span>*</span></label>
-          <input type="number" className="form-control mb-2 mt-1" name='phone' ref={Phone} onChange={phone_check} placeholder='Enter Customer Phone Number' />
-          <h6 ref={phone_error} className="Error_text mb-2">Phone Number Already Exists</h6>
-          <label>E-mail:<span>*</span></label>
-          <input type="mail" className="form-control mb-2 mt-1" name='mail' ref={Mail} onChange={mail_check} placeholder='Enter Customer E-mail' />
-          <h6 ref={mail_error} className="Error_text mb-2">E-mail Already Used</h6>
-          <label>Address:<span>*</span></label>
-          <textarea type="text" className="form-control mb-2 mt-1" name='address' onChange={set} placeholder='Enter Customer Address' />
-          <button className='btn btn-primary mt-2' ref={btn_add_customer} onClick={add_customer}>Add Customer</button>
-        </form>
-      </div>
-      <div className='container-fluid mt-3'>
-        <h1 className='text-center mb-4 mt-2'>Customer Record</h1>
-        <h6 className='text-end pe-3'>Help</h6>
-        <table className=' table table-striped table-hover table-bordered'>
-          <thead>
-            <tr className='text-center'>
-              <th>Name</th>
-              <th>Phone</th>
-              <th style={{ width: '16%' }}>E-mail</th>
-              <th style={{ width: '25%' }}>Address</th>
-              <th style={{ width: '15%' }}>Balance Amount</th>
-              <th style={{ width: '8%' }}>Transections</th>
-              <th>Operations</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              customer_details ? Object.keys(customer_details).map(function (key) {
-                return (
-                  <tr key={key} className='text-center'>
-                    <td>{customer_details[key].name}</td>
-                    <td>{customer_details[key].phone}</td>
-                    <td>{customer_details[key].mail}</td>
-                    <td>{customer_details[key].address}</td>
-                    <td>{customer_details[key].Balance}</td>
-                    <td><button className='btn btn-primary' onClick={() => Transection(key)}>View</button></td>
-                    <td>
-                      <button className=" btn btn-primary me-1" onClick={() => credit_page(key)}>+</button>
-                      <button className=" btn btn-warning" onClick={() => debit_page(key)}>--</button>
-                      <button className=" btn btn-danger ms-1">X</button>
-                    </td>
+      <div className='home'>
+        <div className=' Header pe-4 pb-2'>
+          <div></div>
+          <h4 className=' text-center mt-2 ps-5'>Welcome, {user.Name ? user.Name : 'User'}</h4>
+          <button className=' btn btn-danger mt-2' onClick={logout}><FontAwesomeIcon icon={faRightFromBracket} /> Logout</button>
+        </div>
+        <div className='container'>
+          <h1 className=' text-center mt-3 mb-2'>Customer Details</h1>
+          <form>
+            <label><FontAwesomeIcon icon={faUser} /> Name:<span>*</span></label>
+            <input type="text" className="form-control mb-2 mt-1" name='name' ref={name} onChange={set} placeholder='Enter Customer Name' />
+            <label><FontAwesomeIcon icon={faPhone} /> Phone:<span>*</span></label>
+            <input type="number" className="form-control mb-2 mt-1" name='phone' ref={Phone} onChange={phone_check} placeholder='Enter Customer Phone Number' />
+            <h6 ref={phone_error} className="Error_text mb-2">Phone Number Already Exists</h6>
+            <label><FontAwesomeIcon icon={faEnvelope} /> E-mail:<span>*</span></label>
+            <input type="mail" className="form-control mb-2 mt-1" name='mail' ref={Mail} onChange={mail_check} placeholder='Enter Customer E-mail' />
+            <h6 ref={mail_error} className="Error_text mb-2">E-mail Already Used</h6>
+            <label><FontAwesomeIcon icon={faLocationDot} /> Address:<span>*</span></label>
+            <textarea type="text" className="form-control mb-2 mt-1" name='address' ref={address} onChange={set} placeholder='Enter Customer Address' />
+            <h6 ref={field_err} className='text-danger text_display'>All Fields Are Mandatory</h6>
+            <h6 ref={customer_success} className='text-success text_display'>Customer Added Successfully</h6>
+            <button className='btn btn-primary mt-2' ref={btn_add_customer} onClick={add_customer}>Add Customer</button>
+          </form>
+        </div>
+        <div className='container-fluid mt-3'>
+          <h1 className='text-center mb-4 mt-2'>Customer Record</h1>
+          <h6 className='text-end pe-3'>Help</h6>
+          <table className=' table table-striped table-hover table-bordered'>
+            <thead>
+              <tr className='text-center'>
+                <th>Sr. No.</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th style={{ width: '16%' }}>E-mail</th>
+                <th style={{ width: '25%' }}>Address</th>
+                <th style={{ width: '15%' }}>Balance Amount</th>
+                <th style={{ width: '8%' }}>Transactions</th>
+                <th>Operations</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                customer_details ? Object.keys(customer_details).map(function (key, index) {
+                  return (
+                    <tr key={key} className='text-center'>
+                      <td>{index + 1}</td>
+                      <td>{customer_details[key].name}</td>
+                      <td>{customer_details[key].phone}</td>
+                      <td>{customer_details[key].mail}</td>
+                      <td>{customer_details[key].address}</td>
+                      <td>{customer_details[key].Balance}</td>
+                      <td><button className='btn btn-primary' onClick={() => Transection(key)}>View</button></td>
+                      <td>
+                        <button className=" btn btn-primary me-1" onClick={() => credit_page(key)}><FontAwesomeIcon icon={faPlus} /></button>
+                        <button className=" btn btn-warning" onClick={() => debit_page(key)}><FontAwesomeIcon icon={faSubtract} /></button>
+                        <button className=" btn btn-danger ms-1" onClick={() => delete_customer(key)}><FontAwesomeIcon icon={faTrash} /></button>
+                      </td>
+                    </tr>
+                  )
+                }) :
+                  <tr>
+                    <td colSpan={8} className='text-center'>No Record Found</td>
                   </tr>
-                )
-              }) :
-                <tr>
-                  <td colSpan={7} className='text-center'>No Record Found</td>
-                </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-      <div ref={Credit} className='add_money'>
-        <div className='bg-white border border-2 border-primary rounded-1 col-3'>
-          <h1 className='text-center bg-primary pb-2 text-light'>Credit</h1>
-          <form className='container pb-2'>
-            <label>Item:<span>*</span></label>
-            <input type="text" name='Item' ref={item} onChange={credit_set} className='form-control mt-1 mb-2' placeholder='Enter Item Name' />
-            <label>Amount:<span>*</span></label>
-            <input type="number" name='Amount' ref={amount} onChange={credit_set} className='form-control mt-1 mb-2' placeholder='Enter Item Cost' />
-            <label>Quantity:<span>*</span></label>
-            <input type="number" name='Quantity' ref={quantity} onChange={credit_set} className='form-control mt-1' placeholder='Enter Quantity of item' />
-            <div className='text-center mt-3'>
-              <button className='btn btn-primary me-1' onClick={add_credit}>Add Amount</button>
-              <button className='btn btn-danger ms-1' onClick={credit_close}>Close</button>
-            </div>
-          </form>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div ref={Credit} className='add_money'>
+          <div className='bg-white border border-2 border-primary rounded-1 col-3'>
+            <h1 className='text-center bg-primary pb-2 text-light'>Credit</h1>
+            <form className='container pb-2'>
+              <label><FontAwesomeIcon icon={faCookieBite} /> Item:<span>*</span></label>
+              <input type="text" name='Item' ref={item} onChange={credit_set} className='form-control mt-1 mb-2' placeholder='Enter Item Name' />
+              <label><FontAwesomeIcon icon={faIndianRupee} /> Amount:<span>*</span></label>
+              <input type="number" name='Amount' ref={amount} onChange={credit_set} className='form-control mt-1 mb-2' placeholder='Enter Item Cost' />
+              <label><FontAwesomeIcon icon={faBoxesStacked} /> Quantity:<span>*</span></label>
+              <input type="number" name='Quantity' ref={quantity} onChange={credit_set} className='form-control mt-1' placeholder='Enter Quantity of item' />
+              <h6 ref={field_err_credit} className='text-danger text_display'>All Fields Are Mandatory</h6>
+              <h6 ref={field_err_credit_success} className='text-success text_display'>Transection Saved</h6>
+              <div className='text-center mt-3'>
+                <button className='btn btn-primary me-1' onClick={add_credit}>Add Amount</button>
+                <button className='btn btn-danger ms-1' onClick={credit_close}>Close</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div ref={debit} className='add_money'>
+          <div className='bg-white border border-2 border-warning rounded-1 col-3'>
+            <h1 className='text-center bg-warning pb-2 text-light'>debit</h1>
+            <form className='container pb-2'>
+              <label><FontAwesomeIcon icon={faIndianRupee} /> Amount:<span>*</span></label>
+              <input type="number" name='Amount' ref={amount_debit} onChange={debit_set} className='form-control mt-1 mb-2' placeholder='Enter Amount Paid By Customer' />
+              <h6 ref={field_err_debit} className='text-danger text_display'>This Field Can't Be Empty</h6>
+              <h6 ref={field_err_debit_success} className='text-success text_display'>Transection Saved</h6>
+              <div className='text-center mt-3'>
+                <button className='btn btn-warning me-1' onClick={debit_amount}>debit Amount</button>
+                <button className='btn btn-danger ms-1' onClick={debit_close}>Close</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-      <div ref={debit} className='add_money'>
-        <div className='bg-white border border-2 border-warning rounded-1 col-3'>
-          <h1 className='text-center bg-warning pb-2 text-light'>debit</h1>
-          <form className='container pb-2'>
-            <label>Amount:<span>*</span></label>
-            <input type="number" name='Amount' ref={amount_debit} onChange={debit_set} className='form-control mt-1 mb-2' placeholder='Enter Amount Paid By Customer' />
-            <div className='text-center mt-3'>
-              <button className='btn btn-warning me-1' onClick={debit_amount}>debit Amount</button>
-              <button className='btn btn-danger ms-1' onClick={debit_close}>Close</button>
-            </div>
-          </form>
-        </div>
+      <div className='align-items-baseline'>
+        <Footer />
       </div>
     </div>
   )

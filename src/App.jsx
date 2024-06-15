@@ -7,6 +7,7 @@ import './Style.css'
 import Admin from './Admin'
 import Home from './Home'
 import Transections from './Transections'
+import Test from './Test'
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
           <Route path='/Admin' element={<Admin />}></Route>
           <Route path='/Home/:key' element={<Home />}></Route>
           <Route path='/Transections/:key/:customerkey' element={<Transections />}></Route>
+          <Route path='/test' element={<Test/>}></Route>
         </Routes>
       </BrowserRouter>
     </div>
