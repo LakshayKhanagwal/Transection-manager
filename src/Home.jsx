@@ -19,6 +19,10 @@ const Home = () => {
   const mail_error = useRef()
   const btn_add_customer = useRef()
 
+  // Search
+  const select_data = useRef()
+  const search_data = useRef()
+
   // Customer key
   const [customer_key, setcustomer_key] = useState()
 
@@ -46,6 +50,7 @@ const Home = () => {
   const [user, setuser] = useState({})
   const [data, setdata] = useState({ Balance: 0 })
   const [customer_details, setcustomer_details] = useState()
+  const [all_customer_details, set_all_customer_details] = useState()
 
   const navigate = useNavigate()
   const { key } = useParams()
@@ -66,6 +71,7 @@ const Home = () => {
   useEffect(function () {
     Firebase.child(`users/${key}/customer`).on('value', function (customer) {
       setcustomer_details(customer.val())
+      set_all_customer_details(customer.val())
     })
   }, [key])
 
@@ -204,6 +210,48 @@ const Home = () => {
     })
   }
 
+  //search Functions
+
+  function change_search_type() {
+    console.log(select_data.current.value);
+    if (select_data.current.value === 'Name') {
+      search_data.current.placeholder = 'Search By Name'
+    } else if (select_data.current.value === 'Phone') {
+      search_data.current.placeholder = 'Search By phone number'
+    }else if (select_data.current.value === 'E-mail') {
+      search_data.current.placeholder = 'Search By E-mail'
+    }
+  }
+
+  function search_customers(event) {
+    if (event.target.value === '') {
+      setcustomer_details(all_customer_details)
+    } else {
+      var obj = {}
+      Object.keys(all_customer_details).map(function (cust_keys) {
+        if (select_data.current.value === 'Name') {
+          if (all_customer_details[cust_keys].name.match(search_data.current.value)) {
+            obj[cust_keys] = all_customer_details[cust_keys]
+          }
+        } else if (select_data.current.value === 'Phone') {
+          if (all_customer_details[cust_keys].phone.match(search_data.current.value)) {
+            obj[cust_keys] = all_customer_details[cust_keys]
+          }
+        } else if (select_data.current.value === 'E-mail') {
+          if (all_customer_details[cust_keys].mail.match(search_data.current.value)) {
+            obj[cust_keys] = all_customer_details[cust_keys]
+          }
+        }
+        return(true)
+      })
+      if (Object.keys(obj).length === 0) {
+        setcustomer_details()
+      } else {
+        setcustomer_details(obj)
+      }
+    }
+  }
+
   //Credit functions
 
   function credit_page(key) {
@@ -308,46 +356,56 @@ const Home = () => {
         </div>
         <div className='container-fluid mt-3'>
           <h1 className='text-center mb-4 mt-2'>Customer Record</h1>
+          <div className='mb-2'>
+            <select className='select form-control bg-danger-subtle' ref={select_data} onChange={change_search_type}>
+              <option className='form-control' value="Name">Name</option>
+              <option className='form-control' value="Phone">Phone</option>
+              <option className='form-control' value="E-mail">E-mail</option>
+            </select>
+            <input type="search" ref={search_data} onChange={search_customers} className='search form-control' placeholder='Search By Name' />
+          </div>
           <h6 className='text-end pe-3'>Help</h6>
-          <table className=' table table-striped table-hover table-bordered'>
-            <thead>
-              <tr className='text-center'>
-                <th>Sr. No.</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th style={{ width: '16%' }}>E-mail</th>
-                <th style={{ width: '25%' }}>Address</th>
-                <th style={{ width: '15%' }}>Balance Amount</th>
-                <th style={{ width: '8%' }}>Transactions</th>
-                <th>Operations</th>
-              </tr>
-            </thead>
-            <tbody>
-              {
-                customer_details ? Object.keys(customer_details).map(function (key, index) {
-                  return (
-                    <tr key={key} className='text-center'>
-                      <td>{index + 1}</td>
-                      <td>{customer_details[key].name}</td>
-                      <td>{customer_details[key].phone}</td>
-                      <td>{customer_details[key].mail}</td>
-                      <td>{customer_details[key].address}</td>
-                      <td>{customer_details[key].Balance}</td>
-                      <td><button className='btn btn-primary' onClick={() => Transection(key)}>View</button></td>
-                      <td>
-                        <button className=" btn btn-primary me-1" onClick={() => credit_page(key)}><FontAwesomeIcon icon={faPlus} /></button>
-                        <button className=" btn btn-warning" onClick={() => debit_page(key)}><FontAwesomeIcon icon={faSubtract} /></button>
-                        <button className=" btn btn-danger ms-1" onClick={() => delete_customer(key)}><FontAwesomeIcon icon={faTrash} /></button>
-                      </td>
+          <div className='table_customer'>
+            <table className=' table table-striped table-hover table-bordered'>
+              <thead>
+                <tr className='text-center'>
+                  <th>Sr. No.</th>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th style={{ width: '16%' }}>E-mail</th>
+                  <th style={{ width: '25%' }}>Address</th>
+                  <th style={{ width: '15%' }}>Balance Amount</th>
+                  <th style={{ width: '8%' }}>Transactions</th>
+                  <th>Operations</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  customer_details ? Object.keys(customer_details).map(function (key, index) {
+                    return (
+                      <tr key={key} className='text-center'>
+                        <td>{index + 1}</td>
+                        <td>{customer_details[key].name}</td>
+                        <td>{customer_details[key].phone}</td>
+                        <td>{customer_details[key].mail}</td>
+                        <td>{customer_details[key].address}</td>
+                        <td>{customer_details[key].Balance}</td>
+                        <td><button className='btn btn-primary' onClick={() => Transection(key)}>View</button></td>
+                        <td>
+                          <button className=" btn btn-primary me-1" onClick={() => credit_page(key)}><FontAwesomeIcon icon={faPlus} /></button>
+                          <button className=" btn btn-warning" onClick={() => debit_page(key)}><FontAwesomeIcon icon={faSubtract} /></button>
+                          <button className=" btn btn-danger ms-1" onClick={() => delete_customer(key)}><FontAwesomeIcon icon={faTrash} /></button>
+                        </td>
+                      </tr>
+                    )
+                  }) :
+                    <tr>
+                      <td colSpan={8} className='text-center'>No Record Found</td>
                     </tr>
-                  )
-                }) :
-                  <tr>
-                    <td colSpan={8} className='text-center'>No Record Found</td>
-                  </tr>
-              }
-            </tbody>
-          </table>
+                }
+              </tbody>
+            </table>
+          </div>
         </div>
         <div ref={Credit} className='add_money'>
           <div className='bg-white border border-2 border-primary rounded-1 col-3'>

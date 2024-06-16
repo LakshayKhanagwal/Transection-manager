@@ -62,7 +62,7 @@ const Transections = () => {
               <div className='text-end col-md-4 col-sm-9'>{customer_details ? customer_details.address : 'Address'}</div>
             </div>
           </div>
-          <div>
+          <div className='table_customer'>
             <table className='table table-striped table-hover table-bordered'>
               <thead>
                 <tr className='text-center'>

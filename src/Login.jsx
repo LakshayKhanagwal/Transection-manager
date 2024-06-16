@@ -10,12 +10,16 @@ const Login = () => {
   const Pass = useRef('')
   const msg = useRef()
   const msg_err = useRef()
+  const msg_empty = useRef()
   const navigate = useNavigate()
 
   function login(event) {
     event.preventDefault()
     if (Uname.current.value === '' || Pass.current.value === '') {
-      alert('err')
+      msg_empty.current.style.display='block'
+      setTimeout(() => {
+        msg_empty.current.style.display = 'none'
+      }, 3000);
     } else {
       if (Uname.current.value === 'Admin' && Pass.current.value === 'Admin@123') {
         navigate('/Admin')
@@ -67,6 +71,7 @@ const Login = () => {
             <input type="Password" name='passsword' className="form-control mb-2 mt-1" ref={Pass} placeholder='Enter Password' />
             <h6 ref={msg} className='text-center text-danger text_display'>User not Approved, Wait For Approval From Admin.</h6>
             <h6 ref={msg_err} className='text-center text-danger text_display'>Wrong Username And Password</h6>
+            <h6 ref={msg_empty} className='text-center text-danger text_display'>Mandatory Fields Can't be Empty.</h6>
             <div className='text-center pt-3'>
               <button onClick={login} className="btn btn-primary mb-1">LogIn</button><br />
               <span className="pb-2">Need An Account <Link to={'/signup'}>Click Here</Link> </span>
