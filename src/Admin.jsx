@@ -1,9 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Firebase from './Firebase'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import Footer from './Footer'
 
 const Admin = () => {
+    const { security_key } = useParams()
+
+    const main = useRef()
+
     const [data, setdata] = useState({})
     const [all_data, set_all_data] = useState({})
     const navigate = useNavigate()
@@ -11,6 +15,15 @@ const Admin = () => {
     // Search
     const select_data = useRef()
     const search_data = useRef()
+
+    useEffect(function () {
+        if (localStorage.getItem('validation') === security_key) {
+            main.current.style.display = 'block'
+            localStorage.removeItem('validation')
+        } else {
+            navigate('/')
+        }
+    }, [security_key, navigate])
 
     useEffect(function () {
         Firebase.child('users').on('value', function (user) {
@@ -93,7 +106,7 @@ const Admin = () => {
         navigate('/')
     }
     return (
-        <div>
+        <div ref={main} style={{ display: 'none' }}>
             <div className='admin'>
                 <div className=' Header pe-4 pb-2'>
                     <div></div>

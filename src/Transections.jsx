@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Firebase from './Firebase'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -6,12 +6,21 @@ import { faArrowLeftLong, faRightFromBracket } from '@fortawesome/free-solid-svg
 import Footer from './Footer'
 
 const Transections = () => {
-  const { key, customerkey } = useParams()
+  const main = useRef()
+  const { key, customerkey,security_key } = useParams()
   const navigate = useNavigate()
   const [trans, settrans] = useState('')
   const [combine_transection, set_combine_transection] = useState()
 
   const [customer_details, set_customer_details] = useState()
+
+  useEffect(function () {
+    if (localStorage.getItem('validation') === security_key) {
+      main.current.style.display = 'block'
+    } else {
+      navigate('/')
+    }
+  }, [security_key, navigate])
 
   useEffect(function () {
     if (trans === '') {
@@ -34,15 +43,16 @@ const Transections = () => {
   }, [key, customerkey])
 
   function back() {
-    navigate(`/Home/${key}`)
+    navigate(`/Home/${key}/${security_key}`)
   }
 
   function logout() {
+    localStorage.removeItem('validation')
     navigate('/')
   }
 
   return (
-    <div>
+    <div ref={main}>
       <div className='Transaction'>
         <div className=' Header ps-3 pe-4 pb-2'>
           <button className='btn btn-warning mt-2' onClick={back}> <FontAwesomeIcon icon={faArrowLeftLong} /> Back</button>

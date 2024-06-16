@@ -16,9 +16,9 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Login />}></Route>
           <Route path='/signup' element={<Signup />}></Route>
-          <Route path='/Admin' element={<Admin />}></Route>
-          <Route path='/Home/:key' element={<Home />}></Route>
-          <Route path='/Transections/:key/:customerkey' element={<Transections />}></Route>
+          <Route path='/Admin/:security_key' element={<Admin />}></Route>
+          <Route path='/Home/:key/:security_key' element={<Home />}></Route>
+          <Route path='/Transections/:key/:customerkey/:security_key' element={<Transections />}></Route>
           <Route path='/test' element={<Test/>}></Route>
         </Routes>
       </BrowserRouter>

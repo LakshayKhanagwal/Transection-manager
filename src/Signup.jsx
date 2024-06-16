@@ -2,13 +2,16 @@ import React, { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Firebase from './Firebase'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faPhone, faEnvelope, faLocationDot, faBriefcase, faBriefcaseClock, faKey } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faPhone, faEnvelope, faLocationDot, faBriefcase, faBriefcaseClock, faKey, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons'
 import Footer from './Footer'
 
 const Signup = () => {
   const [data, setdata] = useState()
   const nevigate = useNavigate()
   const field_err = useRef()
+
+  const [Visibility, setvisibility] = useState(true)
+  const [icons, seticons] = useState(faLock)
 
   const Name = useRef()
   const Phone = useRef()
@@ -82,6 +85,18 @@ const Signup = () => {
     })
   }
 
+  function visibility() {
+    if (Visibility === true) {
+      Pass.current.type = 'text'
+      setvisibility(false)
+      seticons(faUnlock)
+    } else {
+      Pass.current.type = 'password'
+      setvisibility(true)
+      seticons(faLock)
+    }
+  }
+
   function signup(e) {
     e.preventDefault()
     if (Name.current.value !== "" && Phone.current.value !== "" && Email.current.value !== "" && Address.current.value !== "" && business_name.current.value !== "" && business_type.current.value !== "" && Uname.current.value !== "" && Pass.current.value !== "") {
@@ -130,7 +145,8 @@ const Signup = () => {
             <input type="text" name='uname' className="form-control mb-2 mt-1" ref={Uname} onChange={username_check} placeholder='Create UserName' />
             <h6 id='uname_error' className="Error_text mb-2">UserName Already Taken</h6>
             <label><FontAwesomeIcon icon={faKey} /> Password: <span>*</span></label>
-            <input type="Password" name='password' className="form-control mb-2 mt-1" ref={Pass} onChange={set} placeholder='Create Password' />
+            <input type="Password" name='password' className="pass_input form-control mb-2 mt-1" ref={Pass} onChange={set} placeholder='Create Password' />
+            <div className='pass_visibility form-control' onClick={visibility}><FontAwesomeIcon icon={icons} /></div>
             <h6 ref={field_err} className='text-center text-danger text_display'>All Fields Are Mandatory</h6>
             <div className='text-center pt-3 mb-2'>
               <button className="btn btn-primary mb-1" id='signup' onClick={signup}>SignUp</button><br />

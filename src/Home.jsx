@@ -7,6 +7,9 @@ import { faUser, faPhone, faEnvelope, faLocationDot, faRightFromBracket, faTrash
 import Footer from './Footer'
 
 const Home = () => {
+  const main = useRef()
+  const {security_key}=useParams()
+
   const name = useRef()
   const Phone = useRef()
   const Mail = useRef()
@@ -56,11 +59,12 @@ const Home = () => {
   const { key } = useParams()
 
   useEffect(function () {
-    if (localStorage.getItem('validation') === 'true') {
-      localStorage.setItem('validation', 'false')
-      // window.location.reload()
+    if (localStorage.getItem('validation') === security_key) {
+      main.current.style.display = 'block'
+    } else {
+      navigate('/')
     }
-  }, [])
+  }, [security_key, navigate])
 
   useEffect(function () {
     Firebase.child(`users/${key}`).on('value', function (user) {
@@ -113,6 +117,7 @@ const Home = () => {
   }, [total_balance_debit, customer_key, key])
 
   function logout() {
+    localStorage.removeItem('validation')
     navigate('/')
   }
 
@@ -192,7 +197,7 @@ const Home = () => {
   }
 
   function Transection(customerkey) {
-    navigate(`/Transections/${key}/${customerkey}`)
+    navigate(`/Transections/${key}/${customerkey}/${security_key}`)
     return (
       <Transections cukey={customerkey} />
     )
@@ -218,7 +223,7 @@ const Home = () => {
       search_data.current.placeholder = 'Search By Name'
     } else if (select_data.current.value === 'Phone') {
       search_data.current.placeholder = 'Search By phone number'
-    }else if (select_data.current.value === 'E-mail') {
+    } else if (select_data.current.value === 'E-mail') {
       search_data.current.placeholder = 'Search By E-mail'
     }
   }
@@ -242,7 +247,7 @@ const Home = () => {
             obj[cust_keys] = all_customer_details[cust_keys]
           }
         }
-        return(true)
+        return (true)
       })
       if (Object.keys(obj).length === 0) {
         setcustomer_details()
@@ -329,7 +334,7 @@ const Home = () => {
   }
 
   return (
-    <div>
+    <div ref={main}>
       <div className='home'>
         <div className=' Header pe-4 pb-2'>
           <div></div>

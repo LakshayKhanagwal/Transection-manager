@@ -64,8 +64,6 @@ label {
     .home {
         height: 95vh;
         overflow-y: scroll;
-        scrollbar-width: 3px;
-        scrollbar-color: black;
     }
 
 
@@ -99,6 +97,15 @@ label {
     margin-top: 6rem;
 }
 
+.pass_input {
+    display: inline-block;
+    width: calc(100% - 2.5rem);
+}
+.pass_visibility{
+    display: inline-block;
+    width: 2.5rem;
+}
+
 .home {
     height: '';
 }
@@ -113,7 +120,7 @@ label {
 }
 
 .select {
-    width:6rem;
+    width: 6rem;
     border-radius: 20px 20px 20px 20px;
     display: inline-block;
     background-color: red;
