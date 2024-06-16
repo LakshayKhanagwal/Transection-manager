@@ -100,7 +100,7 @@ const Transections = () => {
                       </tr>
                     )
                   }) : <tr>
-                    <td colSpan={5} className='text-center'>No Record Found</td>
+                    <td colSpan={7} className='text-center'>No Record Found</td>
                   </tr>
                 }
               </tbody>
