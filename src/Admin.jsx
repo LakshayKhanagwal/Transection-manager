@@ -122,48 +122,47 @@ const Admin = () => {
                         </select>
                         <input type="search" ref={search_data} onChange={search_customers} className='search_admin form-control' placeholder='Search By Name' />
                     </div>
-                    <table className=" table table-striped table-hover table-bordered mt-3">
-                        <thead>
-                            <tr className='text-center'>
-                                <th>Name</th>
-                                <th>Phone</th>
-                                <th>E-mail</th>
-                                <th>Business Name</th>
-                                <th>Business Type</th>
-                                <th>UserName</th>
-                                <th>Password</th>
-                                <th>Status</th>
-                                <th>Operations</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                data ? Object.keys(data).map(function (user) {
-                                    return (
-                                        <tr key={user}>
-                                            <td>{data[user].Name}</td>
-                                            <td>{data[user].phone}</td>
-                                            <td>{data[user].email}</td>
-                                            <td>{data[user].business_name}</td>
-                                            <td>{data[user].business_type}</td>
-                                            <td>{data[user].uname}</td>
-                                            <td>{data[user].password}</td>
-                                            <td>{data[user].Approval ? data[user].Approval : "Not Approved"}</td>
-                                            <td>
-                                                <div>
-                                                    <button className={data[user].Approval ? ' btn btn-warning me-1' : "btn btn-primary me-1"} onClick={() => approval(user)}>{data[user].Approval ? 'Un-Approve' : "Approved"}</button>
-                                                    <button className='btn btn-danger' onClick={() => del(user)}>Delete</button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )
-                                }) :
-                                    <tr>
-                                        <td colSpan={9} className=' text-center'>No Record found</td>
-                                    </tr>
-                            }
-                        </tbody>
-                    </table>
+                    <div className='table_customer'>
+                        <table className=" table table-striped table-hover table-bordered mt-3">
+                            <thead>
+                                <tr className='text-center'>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>E-mail</th>
+                                    <th>Business Name</th>
+                                    <th>Business Type</th>
+                                    <th>UserName</th>
+                                    <th>Password</th>
+                                    <th>Status</th>
+                                    <th>Operations</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    data ? Object.keys(data).map(function (user) {
+                                        return (
+                                            <tr key={user}>
+                                                <td>{data[user].Name}</td>
+                                                <td>{data[user].phone}</td>
+                                                <td>{data[user].email}</td>
+                                                <td>{data[user].business_name}</td>
+                                                <td>{data[user].business_type}</td>
+                                                <td>{data[user].uname}</td>
+                                                <td>{data[user].password}</td>
+                                                <td>{data[user].Approval ? data[user].Approval : "Not Approved"}</td>
+                                                <td>
+                                                    <div>
+                                                        <button className={data[user].Approval ? ' btn btn-warning me-1' : "btn btn-primary me-1"} onClick={() => approval(user)}>{data[user].Approval ? 'Un-Approve' : "Approved"}</button>
+                                                        <button className='btn btn-danger' onClick={() => del(user)}>Delete</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )
+                                    }) : <tr><td colSpan={9} className=' text-center'>No Record found</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div className='align-items-baseline'>

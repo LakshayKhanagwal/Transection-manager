@@ -78,7 +78,7 @@ const Transections = () => {
                 <tr className='text-center'>
                   <th>Sr. No.</th>
                   <th>Item</th>
-                  <th>Date</th>
+                  <th>Date/Time</th>
                   <th style={{ width: '15%' }}>Quantity</th>
                   <th style={{ width: '15%' }}>Price</th>
                   <th style={{ width: '15%' }}>Paid Amount</th>
@@ -92,7 +92,7 @@ const Transections = () => {
                       <tr key={key}>
                         <td style={{ width: '10%' }} className='text-center'>{index + 1}</td>
                         <td className={combine_transection[key].Item ? '' : 'text_weight'}>{combine_transection[key].Item ? combine_transection[key].Item : 'Payment'}</td>
-                        <td>asd</td>
+                        <td>{combine_transection[key].date_time}</td>
                         <td>{combine_transection[key].Quantity ? combine_transection[key].Quantity : '-'}</td>
                         <td>{combine_transection[key].Item ? combine_transection[key].Amount : '-'}</td>
                         <td className={combine_transection[key].Item ? '' : 'text_weight'}>{combine_transection[key].Item ? '-' : `-${combine_transection[key].Amount}`}</td>

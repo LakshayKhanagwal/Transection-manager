@@ -8,7 +8,7 @@ import Footer from './Footer'
 
 const Home = () => {
   const main = useRef()
-  const {security_key}=useParams()
+  const { security_key } = useParams()
 
   const name = useRef()
   const Phone = useRef()
@@ -21,6 +21,15 @@ const Home = () => {
   const phone_error = useRef()
   const mail_error = useRef()
   const btn_add_customer = useRef()
+
+  // Date and Time
+  const date = new Date()
+  const date_transection = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`
+  const time_transection = date.toLocaleString([], {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  const complete_date_time = `${date_transection}/${time_transection}`
 
   // Search
   const select_data = useRef()
@@ -57,6 +66,12 @@ const Home = () => {
 
   const navigate = useNavigate()
   const { key } = useParams()
+
+  useEffect(function () {
+    setcreditstate({ 'date_time': complete_date_time })
+    setdebitstate({ 'date_time': complete_date_time })
+  }, [complete_date_time])
+  console.log(debitstate);
 
   useEffect(function () {
     if (localStorage.getItem('validation') === security_key) {
@@ -304,7 +319,7 @@ const Home = () => {
   }
 
   function debit_set(event) {
-    setdebitstate({ [event.target.name]: event.target.value })
+    setdebitstate({ ...debitstate,[event.target.name]: event.target.value })
   }
 
   function debit_amount(e) {
