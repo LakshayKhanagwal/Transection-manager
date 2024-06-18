@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import Firebase from './Firebase'
 import { useNavigate, useParams } from 'react-router-dom'
 import Footer from './Footer'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 
 const Admin = () => {
     const { security_key } = useParams()
@@ -126,6 +128,7 @@ const Admin = () => {
                         <table className=" table table-striped table-hover table-bordered mt-3">
                             <thead>
                                 <tr className='text-center'>
+                                    <th>Sr. No.</th>
                                     <th>Name</th>
                                     <th>Phone</th>
                                     <th>E-mail</th>
@@ -139,9 +142,10 @@ const Admin = () => {
                             </thead>
                             <tbody>
                                 {
-                                    data ? Object.keys(data).map(function (user) {
+                                    data ? Object.keys(data).map(function (user,index) {
                                         return (
                                             <tr key={user}>
+                                                <td>{index+1}</td>
                                                 <td>{data[user].Name}</td>
                                                 <td>{data[user].phone}</td>
                                                 <td>{data[user].email}</td>

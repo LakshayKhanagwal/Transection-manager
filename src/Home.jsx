@@ -428,7 +428,7 @@ const Home = () => {
           </div>
         </div>
         <div ref={Credit} className='add_money'>
-          <div className='bg-white border border-2 border-primary rounded-1 col-3'>
+          <div className='bg-white border border-2 border-primary rounded-1 col-md-3 col-9'>
             <h1 className='text-center bg-primary pb-2 text-light'>Credit</h1>
             <form className='container pb-2'>
               <label><FontAwesomeIcon icon={faCookieBite} /> Item:<span>*</span></label>
@@ -447,7 +447,7 @@ const Home = () => {
           </div>
         </div>
         <div ref={debit} className='add_money'>
-          <div className='bg-white border border-2 border-warning rounded-1 col-3'>
+          <div className='bg-white border border-2 border-warning rounded-1 col-md-3 col-9'>
             <h1 className='text-center bg-warning pb-2 text-light'>debit</h1>
             <form className='container pb-2'>
               <label><FontAwesomeIcon icon={faIndianRupee} /> Amount:<span>*</span></label>
